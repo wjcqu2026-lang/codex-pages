@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>催收录音详情</title>
+    <style>
+:root {
+  color-scheme: light;
+  --bg: #eef2f6;
+  --surface: #ffffff;
+  --surface-soft: #f7f9fc;
+  --line: #d9e0e9;
+  --line-strong: #c5cfdb;
+  --text: #172033;
+  --muted: #657185;
+  --blue: #1d63ed;
+  --blue-soft: #e8f0ff;
+  --green: #147a53;
+  --green-soft: #e6f6ef;
+  --yellow: #8b5a00;
+  --yellow-soft: #fff3d6;
+  --red: #b42318;
+  --red-soft: #fff0ed;
+  --agent: #eef6ff;
+  --customer: #f4f6f9;
+  --shadow: 0 18px 42px rgba(24, 39, 75, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 1120px;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    Inter, "SF Pro Display", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.shell {
+  padding: 24px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.crumb {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+
+h1,
+h2,
+p,
+dl,
+dd,
+ol {
+  margin: 0;
+}
+
+h1 {
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+h1 span {
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+h2 {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.header-actions,
+.audio-tools,
+.marker-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+button {
+  border: 1px solid var(--line-strong);
+  background: #fff;
+  color: var(--text);
+  min-height: 34px;
+  padding: 0 13px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: #98a8bb;
+}
+
+.icon-button {
+  width: 34px;
+  padding: 0;
+  font-size: 23px;
+  line-height: 1;
+}
+
+.text-button {
+  min-height: auto;
+  border: 0;
+  padding: 0;
+  color: var(--blue);
+  background: transparent;
+}
+
+.summary-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.15fr 0.9fr 1.55fr 1.55fr;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--line);
+  box-shadow: var(--shadow);
+}
+
+.metric {
+  min-height: 72px;
+  padding: 14px 16px;
+  background: var(--surface);
+}
+
+.metric span,
+dt,
+.panel-title span,
+time {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.metric strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.metric .grade {
+  color: var(--yellow);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(720px, 1fr) 400px;
+  gap: 16px;
+  margin-top: 16px;
+  height: calc(100vh - 152px);
+  min-height: 700px;
+}
+
+.left-panel,
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 8px 22px rgba(25, 38, 64, 0.04);
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sticky-title {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--surface);
+}
+
+.player {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 14px;
+  padding: 16px;
+}
+
+.play-button {
+  width: 56px;
+  height: 56px;
+  min-height: 56px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--blue);
+  color: white;
+  font-size: 20px;
+}
+
+.track-area {
+  min-width: 0;
+}
+
+.time-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--blue);
+  margin: 10px 0 8px;
+}
+
+.marker-row {
+  flex-wrap: wrap;
+}
+
+.marker-row button,
+.audio-tools button {
+  min-height: 28px;
+  padding: 0 9px;
+  font-size: 12px;
+  background: var(--surface-soft);
+}
+
+.audio-tools {
+  justify-content: space-between;
+  padding: 0 16px 16px;
+  color: var(--muted);
+  font-size: 13px;
+  flex-wrap: wrap;
+}
+
+.audio-tools label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.active-tool {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-soft) !important;
+}
+
+.structure-panel {
+  border-color: #b9cef4;
+}
+
+.summary-body {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.summary-main {
+  padding: 10px 11px;
+  border-radius: 8px;
+  background: var(--blue-soft);
+  border: 1px solid #cfe0ff;
+}
+
+.summary-main strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.summary-main p {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.summary-grid div {
+  min-height: 54px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.summary-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.summary-grid strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.transcript-panel {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.search-box input {
+  width: 230px;
+  height: 32px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 0 10px;
+  background: var(--surface-soft);
+}
+
+.transcript {
+  height: calc(100% - 52px);
+  overflow: auto;
+  padding: 10px 12px 16px;
+  scroll-behavior: smooth;
+}
+
+.utterance {
+  display: flex;
+  margin-bottom: 7px;
+}
+
+.utterance.customer {
+  justify-content: flex-start;
+}
+
+.utterance.agent {
+  justify-content: flex-end;
+}
+
+.bubble {
+  max-width: min(680px, 78%);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 10px;
+  background: var(--customer);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.agent .bubble {
+  background: var(--agent);
+  border-color: #cfe1fb;
+}
+
+.bubble:hover {
+  border-color: #93a6bd;
+}
+
+.utterance.active .bubble {
+  border-color: var(--blue);
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--blue-soft);
+  transform: translateY(-1px);
+}
+
+.message-text {
+  font-size: 13px;
+  line-height: 1.42;
+}
+
+.hit {
+  background: #fff0bd;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 12px;
+  padding: 16px;
+}
+
+.info-grid.compact {
+  gap: 12px;
+}
+
+dd {
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.yellow {
+  color: var(--yellow);
+  background: var(--yellow-soft);
+}
+
+.red {
+  color: var(--red);
+  background: var(--red-soft);
+}
+
+.timeline {
+  list-style: none;
+  padding: 14px 16px 16px;
+}
+
+.timeline li {
+  position: relative;
+  padding-left: 18px;
+  padding-bottom: 16px;
+  border-left: 1px solid var(--line-strong);
+}
+
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+.timeline li:last-child {
+  padding-bottom: 0;
+}
+
+.timeline strong {
+  display: block;
+  margin: 5px 0 4px;
+  font-size: 14px;
+}
+
+.timeline p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.quality {
+  flex: 1;
+}
+
+.check-list {
+  display: grid;
+  gap: 11px;
+  padding: 16px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.check-list label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 1180px) {
+  body {
+    min-width: 0;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .summary-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .transcript-panel {
+    height: 620px;
+  }
+}
+
+</style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <div class="crumb">催收管理 / 录音质检 / 录音详情</div>
+          <h1>录音详情 <span>CALL-20260624-0918</span></h1>
+        </div>
+        <div class="header-actions" aria-label="页面操作">
+          <button class="icon-button" title="上一通录音" aria-label="上一通录音">‹</button>
+          <button class="icon-button" title="下一通录音" aria-label="下一通录音">›</button>
+        </div>
+      </header>
+
+      <section class="summary-strip" aria-label="关键摘要">
+        <div class="metric">
+          <span>客户</span>
+          <strong>陆明轩</strong>
+        </div>
+        <div class="metric">
+          <span>缴款评级</span>
+          <strong class="grade">B- 观察</strong>
+        </div>
+        <div class="metric">
+          <span>逾期金额</span>
+          <strong>¥ 18,430.00</strong>
+        </div>
+        <div class="metric">
+          <span>通话时长</span>
+          <strong>06:42</strong>
+        </div>
+        <div class="metric">
+          <span>开始时间</span>
+          <strong>2026-06-24 09:18:32</strong>
+        </div>
+        <div class="metric">
+          <span>结束时间</span>
+          <strong>2026-06-24 09:25:14</strong>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <aside class="left-panel">
+          <section class="panel">
+            <div class="panel-title">
+              <h2>录音播放</h2>
+              <span id="playState">待播放</span>
+            </div>
+            <div class="player">
+              <button class="play-button" id="playButton" aria-label="播放或暂停">▶</button>
+              <div class="track-area">
+                <div class="time-row">
+                  <span id="currentTime">00:00</span>
+                  <span>06:42</span>
+                </div>
+                <input id="seek" type="range" min="0" max="402" value="0" />
+                <div class="marker-row">
+                  <button data-jump="39">承诺还款</button>
+                  <button data-jump="151">风险异议</button>
+                  <button data-jump="274">协商方案</button>
+                </div>
+              </div>
+            </div>
+            <div class="audio-tools">
+              <label><input id="autoScroll" type="checkbox" checked /> 文本跟随</label>
+              <label><input id="voiceRead" type="checkbox" checked /> 朗读当前句</label>
+              <button id="slow">0.8x</button>
+              <button id="normal" class="active-tool">1.0x</button>
+              <button id="fast">1.25x</button>
+            </div>
+          </section>
+
+          <section class="panel transcript-panel">
+            <div class="panel-title sticky-title">
+              <h2>录音文本</h2>
+              <div class="search-box">
+                <input id="searchText" type="search" placeholder="搜索：承诺、投诉、还款" />
+              </div>
+            </div>
+            <div class="transcript" id="transcript" aria-label="转写对话"></div>
+          </section>
+        </aside>
+
+        <aside class="right-panel">
+          <section class="panel structure-panel">
+            <div class="panel-title">
+              <h2>录音结构总结</h2>
+              <span>自动生成</span>
+            </div>
+            <div class="summary-body">
+              <div class="summary-main">
+                <strong>已完成核身和欠款告知，客户愿意今日先还款，但未完全承诺补齐日期。</strong>
+                <p>结果记录为：今日 18 点前先缴 3,000 元，剩余欠款 6 月 27 日再次协商；客户要求优先联系本人。</p>
+              </div>
+              <div class="summary-grid">
+                <div>
+                  <span>沟通阶段</span>
+                  <strong>核身 / 告知 / 协商 / 确认</strong>
+                </div>
+                <div>
+                  <span>客户态度</span>
+                  <strong class="tag yellow">愿还但紧张</strong>
+                </div>
+                <div>
+                  <span>还款安排</span>
+                  <strong>18:00 前 ¥3,000</strong>
+                </div>
+                <div>
+                  <span>复核重点</span>
+                  <strong class="tag red">补齐日未锁定</strong>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-title"><h2>客户信息</h2><span>已脱敏</span></div>
+            <dl class="info-grid">
+              <div><dt>客户姓名</dt><dd>陆明轩</dd></div>
+              <div><dt>证件尾号</dt><dd>**** 4218</dd></div>
+              <div><dt>手机号</dt><dd>138****7620</dd></div>
+              <div><dt>账户编号</dt><dd>AC8842031</dd></div>
+              <div><dt>缴款评级</dt><dd class="tag yellow">B- 观察</dd></div>
+              <div><dt>风险标签</dt><dd class="tag red">连续逾期</dd></div>
+              <div><dt>逾期天数</dt><dd>23 天</dd></div>
+              <div><dt>最近缴款</dt><dd>2026-05-31</dd></div>
+            </dl>
+          </section>
+
+          <section class="panel">
+            <div class="panel-title"><h2>经办信息</h2><span>本通电话</span></div>
+            <dl class="info-grid compact">
+              <div><dt>经办人</dt><dd>周琪</dd></div>
+              <div><dt>坐席工号</dt><dd>CS-0836</dd></div>
+            </dl>
+          </section>
+
+          <section class="panel">
+            <div class="panel-title"><h2>历史沟通</h2><button class="text-button">查看全部</button></div>
+            <ol class="timeline">
+              <li>
+                <time>06-21 16:08</time>
+                <strong>短信提醒</strong>
+                <p>发送 M2 逾期提醒，客户未回复。</p>
+              </li>
+              <li>
+                <time>06-18 10:42</time>
+                <strong>电话沟通</strong>
+                <p>客户称工资延迟，预计 06-24 前处理部分欠款。</p>
+              </li>
+              <li>
+                <time>06-10 14:20</time>
+                <strong>微信跟进</strong>
+                <p>发送账单明细与减免规则截图，客户已读。</p>
+              </li>
+            </ol>
+          </section>
+
+          <section class="panel quality">
+            <div class="panel-title"><h2>质检提示</h2><span>自动识别</span></div>
+            <div class="check-list">
+              <label><input type="checkbox" checked /> 核验客户身份</label>
+              <label><input type="checkbox" checked /> 告知欠款金额</label>
+              <label><input type="checkbox" /> 明确还款截止日</label>
+              <label><input type="checkbox" checked /> 无敏感威胁话术</label>
+            </div>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+const duration = 402;
+let current = 0;
+let playing = false;
+let speed = 1;
+let timer = null;
+let lastSpokenIndex = -1;
+
+const transcriptData = [
+  {
+    start: 0,
+    end: 12,
+    role: "agent",
+    speaker: "周琪",
+    text: "您好，请问是陆明轩先生本人吗？我是受托处理账单提醒的周琪，来电会进行录音。"
+  },
+  {
+    start: 12,
+    end: 24,
+    role: "customer",
+    speaker: "陆明轩",
+    text: "我是。你说吧，我现在在外面，时间不是特别方便。"
+  },
+  {
+    start: 24,
+    end: 39,
+    role: "agent",
+    speaker: "周琪",
+    text: "好的，我尽量简短。您当前账户逾期 23 天，应还金额是一万八千四百三十元。上次沟通您提到今天会处理一部分，请问现在安排得怎么样？"
+  },
+  {
+    start: 39,
+    end: 60,
+    role: "customer",
+    speaker: "陆明轩",
+    text: "我工资今天下午才发，之前说的不是不还，是钱还没到账。能不能先还三千，剩下的下周再补？"
+  },
+  {
+    start: 60,
+    end: 84,
+    role: "agent",
+    speaker: "周琪",
+    text: "可以先登记您的还款意愿。为了避免评级继续下调，建议您今天 18 点前先缴三千元，并在 6 月 28 日前补齐剩余部分。"
+  },
+  {
+    start: 84,
+    end: 111,
+    role: "customer",
+    speaker: "陆明轩",
+    text: "我只能保证今天先还，28 号不一定。家里也有开销，你们每天打电话我压力也很大。"
+  },
+  {
+    start: 111,
+    end: 136,
+    role: "agent",
+    speaker: "周琪",
+    text: "理解您的压力，我们这边不会使用威胁或影响您正常工作的方式沟通。今天这通主要是确认可执行的缴款安排，减少后续提醒频次。"
+  },
+  {
+    start: 136,
+    end: 151,
+    role: "customer",
+    speaker: "陆明轩",
+    text: "那你先别承诺我 28 号一定能还完，我怕写上去之后又变成我违约。"
+  },
+  {
+    start: 151,
+    end: 183,
+    role: "agent",
+    speaker: "周琪",
+    text: "没问题，我会如实记录为今日先缴三千，剩余金额待工资和家庭支出确认后再协商。系统会在 6 月 27 日做一次提醒，不写成强制承诺。"
+  },
+  {
+    start: 183,
+    end: 215,
+    role: "customer",
+    speaker: "陆明轩",
+    text: "这样可以。你把金额和账户发短信给我，我下午五点左右处理。"
+  },
+  {
+    start: 215,
+    end: 247,
+    role: "agent",
+    speaker: "周琪",
+    text: "我稍后发送官方短信，短信中会包含应还金额、当前评级和还款入口。为了保护账户安全，请您只通过官方入口缴款。"
+  },
+  {
+    start: 247,
+    end: 274,
+    role: "customer",
+    speaker: "陆明轩",
+    text: "可以。如果今天三千到账之后，你们系统里会不会还是显示我没还？"
+  },
+  {
+    start: 274,
+    end: 310,
+    role: "agent",
+    speaker: "周琪",
+    text: "到账后通常十分钟内更新。若您 18 点前完成缴款，我这边会同步备注已部分履约，后续沟通会按剩余金额继续协商。"
+  },
+  {
+    start: 310,
+    end: 338,
+    role: "customer",
+    speaker: "陆明轩",
+    text: "行，那我下午处理。你们别再给我家里人打电话。"
+  },
+  {
+    start: 338,
+    end: 372,
+    role: "agent",
+    speaker: "周琪",
+    text: "收到。我们会优先联系您本人，除非长期无法联系或规则要求核验紧急联系人，不会随意透露您的欠款信息。"
+  },
+  {
+    start: 372,
+    end: 402,
+    role: "agent",
+    speaker: "周琪",
+    text: "今天沟通结果我记录为：客户确认本人，18 点前先缴三千，剩余欠款 6 月 27 日再协商。感谢配合，再见。"
+  }
+];
+
+const playButton = document.getElementById("playButton");
+const seek = document.getElementById("seek");
+const currentTime = document.getElementById("currentTime");
+const transcript = document.getElementById("transcript");
+const playState = document.getElementById("playState");
+const autoScroll = document.getElementById("autoScroll");
+const voiceRead = document.getElementById("voiceRead");
+const searchText = document.getElementById("searchText");
+const speedButtons = {
+  slow: document.getElementById("slow"),
+  normal: document.getElementById("normal"),
+  fast: document.getElementById("fast")
+};
+
+function formatTime(seconds) {
+  const min = Math.floor(seconds / 60).toString().padStart(2, "0");
+  const sec = Math.floor(seconds % 60).toString().padStart(2, "0");
+  return `${min}:${sec}`;
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function renderTranscript(query = "") {
+  const keyword = query.trim();
+  transcript.innerHTML = transcriptData
+    .map((item, index) => {
+      const text = keyword
+        ? item.text.replace(new RegExp(escapeRegExp(keyword), "gi"), (match) => `<span class="hit">${match}</span>`)
+        : item.text;
+
+      return `
+        <article class="utterance ${item.role}" data-index="${index}" data-start="${item.start}">
+          <button class="bubble" type="button">
+            <div class="message-text">${text}</div>
+          </button>
+        </article>
+      `;
+    })
+    .join("");
+
+  transcript.querySelectorAll(".utterance").forEach((node) => {
+    node.addEventListener("click", () => {
+      setCurrent(Number(node.dataset.start), true);
+      if (!playing) startPlayback();
+    });
+  });
+
+  updateActiveLine();
+}
+
+function activeSegment() {
+  return transcriptData.find((item) => current >= item.start && current < item.end) || transcriptData.at(-1);
+}
+
+function updateActiveLine() {
+  const segment = activeSegment();
+  const index = transcriptData.indexOf(segment);
+  document.querySelectorAll(".utterance").forEach((node) => {
+    node.classList.toggle("active", Number(node.dataset.index) === index);
+  });
+
+  if (autoScroll.checked) {
+    const activeNode = transcript.querySelector(".utterance.active");
+    activeNode?.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+}
+
+function speakSegment() {
+  if (!voiceRead.checked || !("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const segment = activeSegment();
+  lastSpokenIndex = transcriptData.indexOf(segment);
+  const utterance = new SpeechSynthesisUtterance(segment.text);
+  utterance.lang = "zh-CN";
+  utterance.rate = Math.min(speed, 1.15);
+  window.speechSynthesis.speak(utterance);
+}
+
+function setCurrent(value, announce = false) {
+  current = Math.max(0, Math.min(duration, value));
+  seek.value = String(current);
+  currentTime.textContent = formatTime(current);
+  updateActiveLine();
+  const activeIndex = transcriptData.indexOf(activeSegment());
+  if (playing && voiceRead.checked && activeIndex !== lastSpokenIndex) speakSegment();
+  if (announce) speakSegment();
+  if (current >= duration) pausePlayback(true);
+}
+
+function tick() {
+  setCurrent(current + speed);
+}
+
+function startPlayback() {
+  playing = true;
+  playButton.textContent = "Ⅱ";
+  playState.textContent = "播放中";
+  clearInterval(timer);
+  timer = setInterval(tick, 1000);
+  speakSegment();
+}
+
+function pausePlayback(resetLabel = false) {
+  playing = false;
+  playButton.textContent = "▶";
+  playState.textContent = resetLabel ? "已结束" : "已暂停";
+  clearInterval(timer);
+  lastSpokenIndex = -1;
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+}
+
+function setSpeed(nextSpeed, activeId) {
+  speed = nextSpeed;
+  Object.entries(speedButtons).forEach(([id, button]) => {
+    button.classList.toggle("active-tool", id === activeId);
+  });
+}
+
+playButton.addEventListener("click", () => {
+  if (playing) {
+    pausePlayback();
+  } else {
+    if (current >= duration) setCurrent(0);
+    startPlayback();
+  }
+});
+
+seek.addEventListener("input", (event) => {
+  setCurrent(Number(event.target.value), true);
+});
+
+document.querySelectorAll("[data-jump]").forEach((button) => {
+  button.addEventListener("click", () => setCurrent(Number(button.dataset.jump), true));
+});
+
+speedButtons.slow.addEventListener("click", () => setSpeed(0.8, "slow"));
+speedButtons.normal.addEventListener("click", () => setSpeed(1, "normal"));
+speedButtons.fast.addEventListener("click", () => setSpeed(1.25, "fast"));
+searchText.addEventListener("input", (event) => renderTranscript(event.target.value));
+
+renderTranscript();
+setCurrent(0);
+
+</script>
+  </body>
+</html>

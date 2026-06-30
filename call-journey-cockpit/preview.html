@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智旅 · 信用卡客户通话旅程平台</title>
+  <link rel="stylesheet" href="./src/styles.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">智</div><div><strong>智旅</strong><span>信用卡客户通话旅程平台</span></div></div>
+      <nav><button>首页总览</button><button class="active">客户旅程</button><button>运营监控</button><button>质检分析</button><button>数据洞察</button></nav>
+      <div class="top-actions"><button class="ghost" id="toggle-ai">收起 AI 助理</button><div class="operator"><span>运营管理员</span><small>旅程策略中心</small></div></div>
+    </header>
+    <section class="searchbar">
+      <label>客户查询</label><input id="query" placeholder="输入客户号、手机号或证件号">
+      <div class="date-field">2025-05-10 至 2025-05-17</div>
+      <select id="topic"><option>全部旅程</option><option>额度与体验</option><option>分期经营</option><option>还款提醒</option><option>风险核验</option></select>
+      <button class="primary" id="search">查询旅程</button>
+    </section>
+    <main>
+      <section class="workspace">
+        <section class="customer-strip">
+          <div class="avatar">张</div><div class="identity"><div><h1>张*明</h1><span class="tag gold">白金卡客户</span><span class="tag risk-tag">体验风险上升</span></div><p>客户 ID 100****5678 · 手机 138****8888 · 北京</p></div>
+          <div class="customer-stat"><span>客户价值</span><strong>88</strong><small>高价值客户</small></div>
+          <div class="customer-stat"><span>信用卡额度</span><strong>¥80,000</strong><small>可用额度 ¥32,500</small></div>
+          <div class="customer-stat"><span>当前账户状态</span><strong class="healthy">正常</strong><small>无逾期</small></div>
+          <div class="customer-stat health"><span>旅程健康度</span><strong>72</strong><small>较昨日下降 8</small></div>
+        </section>
+        <section class="journey-panel">
+          <div class="section-heading"><div><span class="eyebrow">CROSS-DEPARTMENT JOURNEY</span><h2>跨部门通话旅程</h2></div><div class="legend"><span class="good-dot"></span>已解决 <span class="live-dot"></span>处理中 <span class="risk-dot"></span>风险/升级</div></div>
+          <div class="journey-map"><div class="date-row"><span>部门 / 日期</span><b>05-10 六</b><b>05-11 日</b><b>05-12 一</b><b>05-13 二</b><b>05-14 三</b><b>05-15 四</b><b>05-16 五</b><b>05-17 六</b></div><div id="lanes"></div>
+            <div class="sentiment-row"><label>情绪趋势</label><div class="sentiment-chart"><i style="height:62%"></i><i style="height:55%"></i><i style="height:66%"></i><i style="height:48%"></i><i style="height:58%"></i><i style="height:45%"></i><i style="height:37%"></i><i class="low" style="height:29%"></i><i style="height:34%"></i><i class="low" style="height:22%"></i><i style="height:36%"></i><i class="low" style="height:18%"></i><span>负面增强</span></div></div>
+          </div>
+        </section>
+        <section class="bottom-grid">
+          <div class="metrics-panel"><div class="section-heading compact"><div><span class="eyebrow">OPERATION SIGNALS</span><h2>旅程运营指标</h2></div><div class="segmented"><button class="active" data-range="7">近7天</button><button data-range="30">近30天</button></div></div><div class="metric-row" id="metrics"></div><div class="mini-insights"><div><span>渠道分布</span><b>客服 43.8%</b><div class="bar"><i style="width:44%"></i></div></div><div><span>负面情绪占比</span><b class="danger-text">50%</b><div class="bar danger"><i style="width:50%"></i></div></div><div><span>TOP 问题</span><b>额度调整</b><div class="bar"><i style="width:76%"></i></div></div></div></div>
+          <div class="call-detail" id="detail"></div>
+        </section>
+      </section>
+      <aside class="copilot" id="copilot">
+        <div class="copilot-title"><div class="ai-orb">AI</div><div><strong>旅程智能助理</strong><span>基于全部通话生成</span></div><span class="online">实时</span></div>
+        <div class="copilot-section"><span class="eyebrow">JOURNEY SUMMARY</span><h3>旅程摘要</h3><p>客户近期因额度调整产生不满，问题尚未闭环，同时在明确减少营销联系后仍被多次触达，负面情绪持续增强。</p></div>
+        <div class="copilot-section"><h3>当前判断</h3><div class="risk-score"><div><span>投诉升级风险</span><strong>高风险 · 86</strong></div><i><b style="width:86%"></b></i></div><ul><li>额度复核承诺已逾期</li><li>营销策略与客户诉求冲突</li><li>最新通话出现正式投诉</li></ul></div>
+        <div class="copilot-section action-box"><span class="eyebrow">NEXT BEST ACTION</span><h3>下一最佳行动</h3><ol><li><b>立即停止营销触达</b><span>建议暂停 14 天</span></li><li><b>安排客服主管回电</b><span>今日 16:00 前</span></li><li><b>同步额度复核结果</b><span>避免客户再次来电</span></li></ol><button class="primary wide" id="action">创建跨部门行动方案</button></div>
+        <div class="copilot-section"><h3>当前选中通话</h3><div class="selected-call" id="selected-call"></div><button class="text-action" id="quality">标记为质检样本</button></div>
+      </aside>
+    </main>
+  </div>
+  <div id="overlay"></div><div id="toast"></div>
+  <script>
+    const calls=[
+      [1,"客服",1,"05-10 09:15","呼入","咨询最低还款","06:33",52,"已解决","good","账单与还款","客户询问最低还款金额及利息计算方式，坐席完成解释。客户提到近期资金安排偏紧。",["资金压力信号","主动咨询还款"],"无",["客户：最近资金安排有点紧，最低还款会有什么影响？","坐席：本期最低还款额为 1,860 元，未还部分将按日计息。","客户：了解，我再安排一下。"]],
+      [2,"电销",2,"05-11 15:30","外呼","账单分期推荐","02:18",41,"客户拒绝","muted","分期经营","向客户推荐账单分期。客户表示暂不需要，并明确希望减少营销联系。",["营销拒绝","频控关注"],"减少近期营销触达",["坐席：本期账单可申请优惠分期。","客户：暂时不需要，最近也不要再给我打营销电话了。"]],
+      [3,"征审",3,"05-12 14:05","回访","资料核验回访","03:48",58,"已完成","good","客户资料","完成客户职业信息与联系地址更新核验，通话过程正常。",["资料已更新"],"无",["坐席：与您确认一下最新的工作单位和联系地址。","客户：好的，信息没有变化。"]],
+      [4,"电销",4,"05-13 16:45","外呼","活动权益邀约","未接通",38,"未接通","muted","活动营销","客户未接听。本次触达发生在客户明确表达减少营销联系之后。",["疑似频控冲突"],"无",["系统：客户未接听。"]],
+      [5,"客服",5,"05-14 11:20","呼入","质疑额度调整","09:15",29,"待跟进","warn","额度与体验","客户对额度调整表示强烈不满，提到近期多次收到营销电话。坐席承诺 3 个工作日内反馈额度评估结果。",["负面情绪增强","投诉倾向","未完成承诺"],"05-17 前反馈额度评估结果",["客户：为什么突然调整额度？最近营销电话倒是一直打。","坐席：很抱歉给您带来困扰，我会提交额度复核。","客户：请尽快给我一个明确答复。"]],
+      [6,"风险",5,"05-14 16:10","外呼","风险核验","04:20",34,"已升级","risk","风险核验","核验近期异常交易。客户确认本人消费，但表达对银行服务体验不满，投诉倾向继续增强。",["投诉倾向增强","服务体验冲突"],"转客服主管关注",["坐席：需要与您确认一笔线上消费。","客户：消费是我的，但你们内部能不能先把之前的问题解决？"]],
+      [7,"电销",6,"05-15 13:47","外呼","分期产品推荐","03:06",22,"策略冲突","risk","分期经营","客户在未解决投诉和减少营销诉求存在期间再次收到营销外呼，客户明确表示不满并挂断。",["营销策略冲突","客户体验恶化","投诉升级风险"],"立即加入营销免打扰",["坐席：为您介绍本期账单分期优惠。","客户：我之前已经说过不要再打营销电话，而且我的问题还没有解决。"]],
+      [8,"催收",7,"05-16 09:25","外呼","还款提醒","04:35",36,"已承诺","warn","还款提醒","客户表示将在 05-18 完成还款，同时再次询问额度复核结果。",["承诺还款","未解决服务问题"],"客户承诺 05-18 还款",["坐席：提醒您本期还款日临近。","客户：我会在 18 号还，之前说的额度复核有结果了吗？"]],
+      [9,"客服",8,"05-17 10:12","呼入","升级投诉","05:02",18,"投诉升级","risk","额度与体验","客户因额度复核承诺未按期反馈、持续收到营销电话而升级投诉，要求主管回电。",["承诺逾期","正式投诉","流失风险"],"主管当日回电",["客户：你们承诺的反馈没有给，营销电话倒是一个接一个。","坐席：非常抱歉，我立即升级并安排主管回电。","客户：今天必须给我明确答复。"]]
+      .map(x=>({id:x[0],dept:x[1],day:x[2],time:x[3],type:x[4],title:x[5],duration:x[6],sentiment:x[7],status:x[8],tone:x[9],topic:x[10],summary:x[11],signals:x[12],promise:x[13],transcript:x[14]}));
+    let selected=9;const depts=["征审","客服","电销","风险","催收"];
+    function render(){const topic=document.querySelector("#topic").value;document.querySelector("#lanes").innerHTML=depts.map(d=>`<div class="lane"><label>${d}</label><div class="lane-track">${calls.filter(c=>c.dept===d&&(topic==="全部旅程"||c.topic===topic)).map(c=>`<button class="call-node ${c.tone} ${c.id===selected?"selected":""}" style="left:calc(${(c.day-1)*14.28}% + 7px)" onclick="selectCall(${c.id})"><span class="node-pulse"></span><b>${c.title}</b><small>${c.time.slice(6)} · ${c.duration}</small></button>`).join("")}</div></div>`).join("");const c=calls.find(x=>x.id===selected);document.querySelector("#detail").innerHTML=`<div class="section-heading compact"><div><span class="eyebrow">CALL INTELLIGENCE</span><h2>通话洞察</h2></div><button class="link-btn" onclick="transcript()">查看完整转写</button></div><div class="call-meta"><span>${c.time}</span><span>${c.dept} · ${c.type}</span><span>${c.duration}</span><b class="${c.tone}">${c.status}</b></div><p class="summary">${c.summary}</p><div class="insight-grid"><div><span>客户情绪</span><strong class="${c.sentiment<30?"danger-text":""}">${c.sentiment}/100</strong></div><div><span>关联议题</span><strong>${c.topic}</strong></div><div><span>承诺事项</span><strong>${c.promise}</strong></div></div><div class="signal-list">${c.signals.map(s=>`<span>${s}</span>`).join("")}</div>`;document.querySelector("#selected-call").innerHTML=`<b>${c.title}</b><span>${c.time} · ${c.dept}</span><p>${c.summary}</p>`}
+    function selectCall(id){selected=id;render()}function toast(t){const x=document.querySelector("#toast");x.className="toast";x.textContent=t;setTimeout(()=>{x.className="";x.textContent=""},2200)}
+    function transcript(){const c=calls.find(x=>x.id===selected);show(`<div class="modal-head"><div><span class="eyebrow">CALL TRANSCRIPT</span><h2>${c.title}</h2></div><button onclick="closeModal()">关闭</button></div><div class="transcript">${c.transcript.map((l,i)=>`<div class="${i%2?"agent-line":"customer-line"}"><span>${i%2?"坐席":"客户"}</span><p>${l.replace(/^.*?：/,"")}</p></div>`).join("")}</div>`)}
+    function action(){show(`<div class="modal-head"><div><span class="eyebrow">ACTION ORCHESTRATION</span><h2>创建跨部门行动方案</h2></div><button onclick="closeModal()">关闭</button></div><div class="action-form"><label>行动目标<input value="今日完成客户投诉闭环并消除错误营销触达"></label><label>责任团队<select><option>客户体验升级组</option><option>客服主管团队</option></select></label><div class="form-row"><label>完成时限<input value="今日 16:00"></label><label>优先级<select><option>紧急</option><option>高</option></select></label></div><label>行动内容<textarea>1. 暂停客户营销触达 14 天&#10;2. 客服主管完成回电并解释额度调整&#10;3. 将处理结果同步至客户旅程</textarea></label><button class="primary wide" onclick="closeModal();toast('行动方案已创建并进入跟踪队列')">确认创建并开始跟踪</button></div>`)}
+    function show(x){document.querySelector("#overlay").innerHTML=`<div class="modal-backdrop" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()">${x}</div></div>`}function closeModal(){document.querySelector("#overlay").innerHTML=""}
+    const metric7=[["交互次数","16","+23%","up"],["已解决率","62%","-8%","down"],["首次解决率","48%","+5%","up"],["升级率","25%","+7%","down"],["满意度","3.1/5","-0.3","down"]],metric30=[["交互次数","43","+9%","up"],["已解决率","71%","+2%","up"],["首次解决率","55%","+4%","up"],["升级率","16%","-2%","up"],["满意度","3.6/5","+0.2","up"]];
+    function metrics(x=metric7){document.querySelector("#metrics").innerHTML=x.map(m=>`<div class="metric"><span>${m[0]}</span><strong>${m[1]}</strong><small class="${m[3]}">${m[2]} 较前期</small></div>`).join("")}
+    document.querySelector("#topic").onchange=render;document.querySelector("#search").onclick=()=>toast("已刷新当前客户旅程");document.querySelector("#quality").onclick=()=>toast("已标记为质检样本");document.querySelector("#action").onclick=action;document.querySelector("#toggle-ai").onclick=function(){const c=document.querySelector("#copilot");c.hidden=!c.hidden;document.querySelector("main").style.gridTemplateColumns=c.hidden?"1fr":"minmax(0,1fr) 300px";this.textContent=c.hidden?"打开 AI 助理":"收起 AI 助理"};document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>toast(`${b.textContent}模块将在后续版本开放`));document.querySelectorAll("[data-range]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-range]").forEach(x=>x.classList.remove("active"));b.classList.add("active");metrics(b.dataset.range==="7"?metric7:metric30)});metrics();render();
+  </script>
+</body>
+</html>

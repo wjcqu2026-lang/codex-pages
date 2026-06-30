@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>坐席个人成长中心</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #647084;
+      --line: #dce1e8;
+      --soft-line: #edf0f4;
+      --blue: #2f6fed;
+      --blue-soft: #eaf1ff;
+      --teal: #0f9f8d;
+      --teal-soft: #e8f7f4;
+      --amber: #ba7a12;
+      --amber-soft: #fff4df;
+      --rose: #cf465f;
+      --rose-soft: #fff0f3;
+      --violet: #7357d8;
+      --violet-soft: #f0edff;
+      --shadow: 0 14px 32px rgba(22, 32, 51, .08);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 248px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .side {
+      background: #101827;
+      color: #d8deea;
+      padding: 24px 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 8px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #5f86ff, #19b7a2 58%, #f4b75a);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 15px;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 3px;
+      font-size: 12px;
+      color: #8f9bb0;
+    }
+
+    .nav {
+      margin-top: 22px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #aeb7c8;
+      text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .nav a.active {
+      color: #fff;
+      background: rgba(255,255,255,.1);
+    }
+
+    .nav .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: .8;
+    }
+
+    .side-note {
+      margin: 32px 8px 0;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 8px;
+      background: rgba(255,255,255,.05);
+    }
+
+    .side-note b {
+      display: block;
+      color: #fff;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .side-note p {
+      margin: 0;
+      color: #99a5b8;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 22px 28px 32px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.25;
+      font-weight: 760;
+    }
+
+    .title p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .segmented {
+      display: inline-flex;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .segmented button,
+    .icon-btn,
+    .ghost-btn,
+    .primary-btn {
+      border: 0;
+      cursor: default;
+      border-radius: 6px;
+      color: var(--ink);
+      background: transparent;
+      min-height: 34px;
+      white-space: nowrap;
+    }
+
+    .segmented button {
+      padding: 0 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .segmented button.active {
+      color: #fff;
+      background: var(--ink);
+    }
+
+    .icon-btn {
+      width: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .primary-btn {
+      padding: 0 14px;
+      color: #fff;
+      background: var(--blue);
+      box-shadow: 0 8px 18px rgba(47,111,237,.18);
+    }
+
+    .ghost-btn {
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: 1.2fr repeat(4, minmax(120px, .55fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel,
+    .metric,
+    .call-card,
+    .phrase,
+    .feed-item {
+      background: var(--panel);
+      border: 1px solid var(--soft-line);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 0 rgba(16,24,39,.02);
+    }
+
+    .hero-metric {
+      padding: 18px;
+      min-height: 138px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-metric:after {
+      content: "";
+      position: absolute;
+      inset: auto 18px 18px auto;
+      width: 142px;
+      height: 72px;
+      border: 1px solid #d8efe9;
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, transparent 49%, rgba(15,159,141,.15) 50%, transparent 51%),
+        repeating-linear-gradient(90deg, transparent, transparent 17px, rgba(23,32,51,.05) 18px);
+    }
+
+    .hero-metric .label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .hero-metric .score {
+      margin-top: 8px;
+      font-size: 40px;
+      line-height: 1;
+      font-weight: 780;
+    }
+
+    .hero-metric .score span {
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .hero-metric p {
+      margin: 12px 0 0;
+      max-width: 430px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .metric {
+      padding: 16px;
+      min-height: 138px;
+    }
+
+    .metric .label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .trend {
+      font-size: 12px;
+      color: var(--teal);
+      background: var(--teal-soft);
+      padding: 3px 6px;
+      border-radius: 999px;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 16px;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .metric small {
+      display: block;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(320px, .8fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .section {
+      padding: 18px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.3;
+    }
+
+    .section-head p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .link-btn {
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      padding: 3px 0;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+
+    .call-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .call-card {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr) 176px;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+    }
+
+    .call-type {
+      display: grid;
+      gap: 8px;
+    }
+
+    .badge {
+      width: max-content;
+      max-width: 100%;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .good {
+      color: #087466;
+      background: var(--teal-soft);
+    }
+
+    .chance {
+      color: #775013;
+      background: var(--amber-soft);
+    }
+
+    .notice {
+      color: #6b54bd;
+      background: var(--violet-soft);
+    }
+
+    .time {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .call-main h3 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .call-main p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 13px;
+    }
+
+    .quote {
+      margin-top: 9px;
+      display: inline-flex;
+      align-items: center;
+      max-width: 100%;
+      gap: 8px;
+      color: #263145;
+      background: #f8fafc;
+      border: 1px solid var(--soft-line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .call-actions {
+      display: grid;
+      gap: 8px;
+      justify-items: stretch;
+    }
+
+    .player {
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      grid-template-columns: 28px 1fr 34px;
+      align-items: center;
+      gap: 8px;
+      padding: 0 8px;
+      color: var(--muted);
+      background: #fff;
+      font-size: 12px;
+    }
+
+    .play {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 10px;
+      padding-left: 2px;
+    }
+
+    .bar {
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue) 0 42%, #d7dde8 42%);
+    }
+
+    .mini-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mini-actions button {
+      flex: 1;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      border-radius: 6px;
+      min-height: 30px;
+      font-size: 12px;
+    }
+
+    .focus-card {
+      padding: 18px;
+      background: #111827;
+      color: #fff;
+      border: 0;
+      box-shadow: var(--shadow);
+    }
+
+    .focus-card .kicker {
+      color: #91a2bd;
+      font-size: 12px;
+    }
+
+    .focus-card h2 {
+      margin: 10px 0 8px;
+      font-size: 20px;
+      line-height: 1.35;
+    }
+
+    .focus-card p {
+      margin: 0;
+      color: #bdc7d8;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .focus-steps {
+      display: grid;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .focus-steps div {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
+      align-items: center;
+      color: #e7ebf2;
+      font-size: 13px;
+    }
+
+    .focus-steps span {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.1);
+      color: #9dd9d1;
+      font-size: 12px;
+    }
+
+    .phrase-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .phrase {
+      padding: 14px;
+      border-left: 3px solid var(--teal);
+    }
+
+    .phrase:nth-child(2) {
+      border-left-color: var(--blue);
+    }
+
+    .phrase:nth-child(3) {
+      border-left-color: var(--amber);
+    }
+
+    .phrase .meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .phrase p {
+      margin: 0;
+      color: #263145;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .insight-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .feed-item {
+      padding: 13px 14px;
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .feed-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .feed-item:nth-child(2) .feed-icon {
+      color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .feed-item:nth-child(3) .feed-icon {
+      color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .feed-item h3 {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .feed-item p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .table th {
+      color: var(--muted);
+      text-align: left;
+      font-weight: 600;
+      padding: 0 10px 10px;
+      border-bottom: 1px solid var(--soft-line);
+    }
+
+    .table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--soft-line);
+      vertical-align: middle;
+    }
+
+    .table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .progress i {
+      display: block;
+      width: 84px;
+      height: 6px;
+      border-radius: 999px;
+      background: #e7ebf1;
+      overflow: hidden;
+    }
+
+    .progress b {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--teal);
+    }
+
+    @media (max-width: 1180px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        display: none;
+      }
+
+      .summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-metric {
+        grid-column: 1 / -1;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .main {
+        padding: 18px 14px 26px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .controls {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .segmented {
+        flex: 1 1 auto;
+      }
+
+      .segmented button {
+        flex: 1;
+        padding: 0 8px;
+      }
+
+      .primary-btn {
+        flex: 1 1 138px;
+      }
+
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-metric:after {
+        opacity: .45;
+        right: -42px;
+      }
+
+      .call-card {
+        grid-template-columns: 1fr;
+      }
+
+      .call-actions {
+        max-width: none;
+      }
+
+      .section {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="side">
+      <div class="brand">
+        <div class="brand-mark">AI</div>
+        <div>
+          <strong>坐席个人成长中心</strong>
+          <span>通话资产化工作台</span>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="主导航">
+        <a class="active" href="#"><span class="dot"></span>今日成长</a>
+        <a href="agent-call-history.html"><span class="dot"></span>通话历史</a>
+        <a href="#"><span class="dot"></span>我的话术库</a>
+        <a href="#"><span class="dot"></span>成长趋势</a>
+        <a href="#"><span class="dot"></span>班组案例</a>
+      </nav>
+
+      <div class="side-note">
+        <b>今日使用建议</b>
+        <p>先看 3 通精选电话，再确认明天一个小调整。整页控制在 5 分钟内完成。</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="title">
+          <h1>今日成长看板</h1>
+          <p>从 86 通转写文本中，筛出值得回看、值得复用、值得明天调整的内容。</p>
+        </div>
+        <div class="controls">
+          <div class="segmented" aria-label="时间范围">
+            <button class="active">今日</button>
+            <button>近7天</button>
+            <button>近30天</button>
+          </div>
+          <button class="icon-btn" title="筛选">⌕</button>
+          <button class="primary-btn">生成今日小结</button>
+        </div>
+      </header>
+
+      <section class="summary" aria-label="摘要指标">
+        <div class="panel hero-metric">
+          <div class="label">AI 成长摘要</div>
+          <div class="score">82<span> / 100</span></div>
+          <p>今天的优势在于客户质疑金额时解释更清楚；主要机会点是客户松口后，承诺日期确认不够稳定。</p>
+        </div>
+
+        <div class="metric">
+          <div class="label">有效沟通 <span class="trend">+8%</span></div>
+          <strong>31</strong>
+          <small>接通后产生明确沟通目标的电话数。</small>
+        </div>
+
+        <div class="metric">
+          <div class="label">入选复盘</div>
+          <strong>5</strong>
+          <small>系统已优先推荐 3 通，剩余可稍后查看。</small>
+        </div>
+
+        <div class="metric">
+          <div class="label">可复用表达 <span class="trend">+2</span></div>
+          <strong>9</strong>
+          <small>来自你自己的有效通话片段。</small>
+        </div>
+
+        <div class="metric">
+          <div class="label">备注建议</div>
+          <strong>14</strong>
+          <small>已自动生成，可选择采用或修改。</small>
+        </div>
+      </section>
+
+      <div class="layout">
+        <div class="stack">
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <h2>今日 3 通值得回看</h2>
+                <p>每通都给出推荐原因、关键片段和一个可直接带走的建议。</p>
+              </div>
+              <button class="link-btn">查看全部 5 通</button>
+            </div>
+
+            <div class="call-list">
+              <article class="call-card">
+                <div class="call-type">
+                  <span class="badge good">做得好</span>
+                  <span class="time">10:24 · 4分18秒</span>
+                </div>
+                <div class="call-main">
+                  <h3>客户质疑金额时，解释清楚并引导到可处理金额</h3>
+                  <p>你先确认客户疑问，再拆到账单周期和最低处理金额，客户从抗拒转为愿意周五先处理一部分。</p>
+                  <div class="quote">关键片段 01:38：先对齐疑问，再推进可承受金额。</div>
+                </div>
+                <div class="call-actions">
+                  <div class="player"><span class="play">▶</span><span class="bar"></span><span>01:38</span></div>
+                  <div class="mini-actions">
+                    <button>收藏</button>
+                    <button>有帮助</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="call-card">
+                <div class="call-type">
+                  <span class="badge chance">差一步</span>
+                  <span class="time">14:06 · 3分52秒</span>
+                </div>
+                <div class="call-main">
+                  <h3>客户已表达愿意处理，但没有收口到具体日期</h3>
+                  <p>客户说“这两天看看”，已经出现松动。下次可以顺势确认最晚处理时间，减少后续反复拨打。</p>
+                  <div class="quote">建议动作：客户松口后补一句“那我们先约到周五前可以吗？”</div>
+                </div>
+                <div class="call-actions">
+                  <div class="player"><span class="play">▶</span><span class="bar"></span><span>02:11</span></div>
+                  <div class="mini-actions">
+                    <button>加入回看</button>
+                    <button>忽略</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="call-card">
+                <div class="call-type">
+                  <span class="badge notice">需留意</span>
+                  <span class="time">16:42 · 2分09秒</span>
+                </div>
+                <div class="call-main">
+                  <h3>第三方接听场景，开场身份确认可以更完整</h3>
+                  <p>接听人说“他不在”，后续沟通较短。类似场景建议先确认关系与是否方便转告，再进入下一步。</p>
+                  <div class="quote">明天提醒：遇到非本人接听，先确认身份，不展开债务细节。</div>
+                </div>
+                <div class="call-actions">
+                  <div class="player"><span class="play">▶</span><span class="bar"></span><span>00:22</span></div>
+                  <div class="mini-actions">
+                    <button>已了解</button>
+                    <button>不准确</button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <h2>本周改进机会</h2>
+                <p>按场景聚合，不把问题堆成电话列表。</p>
+              </div>
+              <button class="link-btn">进入趋势</button>
+            </div>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>场景</th>
+                  <th>系统观察</th>
+                  <th>完成度</th>
+                  <th>下一步</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>客户要求延期</td>
+                  <td>7 通中 4 通未确认具体日期</td>
+                  <td><span class="progress"><i><b style="width:58%"></b></i>58%</span></td>
+                  <td>先约最晚处理时间</td>
+                </tr>
+                <tr>
+                  <td>质疑金额</td>
+                  <td>解释清晰度提升，客户中断减少</td>
+                  <td><span class="progress"><i><b style="width:82%"></b></i>82%</span></td>
+                  <td>保留当前表达</td>
+                </tr>
+                <tr>
+                  <td>客户说没钱</td>
+                  <td>可处理金额确认不足</td>
+                  <td><span class="progress"><i><b style="width:64%"></b></i>64%</span></td>
+                  <td>先问可承受金额</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+
+        <aside class="stack">
+          <section class="panel focus-card">
+            <div class="kicker">明天只改一个点</div>
+            <h2>客户松口后，及时确认具体还款日期</h2>
+            <p>今天有 4 通电话已经出现还款意愿，但停在“这两天看看”。明天优先把意愿收口成明确日期。</p>
+            <div class="focus-steps">
+              <div><span>1</span>客户松口后先复述意愿</div>
+              <div><span>2</span>给出一个具体日期选项</div>
+              <div><span>3</span>确认金额、日期、方式</div>
+            </div>
+          </section>
+
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <h2>我的高光片段</h2>
+                <p>从你的成功通话里提炼出的可复用表达。</p>
+              </div>
+            </div>
+            <div class="phrase-grid">
+              <article class="phrase">
+                <div class="meta"><span>处理金额质疑</span><span>被复用 6 次</span></div>
+                <p>“我先不让您马上决定，我们先把这笔金额的构成对一下，您看哪一部分有疑问。”</p>
+              </article>
+              <article class="phrase">
+                <div class="meta"><span>推进承诺日期</span><span>转化较好</span></div>
+                <p>“那我们先按您刚才说的情况，约一个最晚处理时间，避免后面反复打扰您。”</p>
+              </article>
+              <article class="phrase">
+                <div class="meta"><span>客户说没钱</span><span>建议保留</span></div>
+                <p>“我理解您现在压力比较大，我们先看一个您能承受的金额，把问题往前推进一步。”</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <h2>AI 生成的通话小结</h2>
+                <p>减少重复备注，采用前可自行修改。</p>
+              </div>
+              <button class="link-btn">批量查看</button>
+            </div>
+
+            <div class="insight-list">
+              <article class="feed-item">
+                <div class="feed-icon">摘</div>
+                <div>
+                  <h3>客户认可欠款，承诺周五先处理 800 元</h3>
+                  <p>异议原因：近期收入延迟。建议下次跟进时先确认工资到账时间。</p>
+                </div>
+              </article>
+              <article class="feed-item">
+                <div class="feed-icon">句</div>
+                <div>
+                  <h3>自动识别到 3 条可沉淀表达</h3>
+                  <p>其中 2 条来自成功承诺电话，可加入个人话术库。</p>
+                </div>
+              </article>
+              <article class="feed-item">
+                <div class="feed-icon">调</div>
+                <div>
+                  <h3>建议明早开拨前复习“延期收口”</h3>
+                  <p>预计耗时 1 分钟，包含一个片段和一句推荐表达。</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

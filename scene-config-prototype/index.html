@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>话术萃取场景配置原型</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="scene-sidebar">
+        <div class="brand-row">
+          <div>
+            <p class="eyebrow">话术萃取</p>
+            <h1>场景配置</h1>
+          </div>
+          <button class="icon-btn" id="newSceneBtn" aria-label="新增场景" title="新增场景">+</button>
+        </div>
+
+        <div class="search-box">
+          <span>⌕</span>
+          <input id="sceneSearch" type="search" placeholder="搜索场景" />
+        </div>
+
+        <div class="scene-list" id="sceneList"></div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <div class="breadcrumb">场景库 / 异议处理 / <span id="crumbScene">价格异议处理</span></div>
+            <div class="title-row">
+              <input id="sceneName" class="scene-title-input" value="价格异议处理" />
+              <span class="title-measure" id="titleMeasure" aria-hidden="true">价格异议处理</span>
+              <div class="status-control">
+                <span class="status-pill" id="statusPill">已启用</span>
+              </div>
+            </div>
+          </div>
+          <div class="top-actions">
+            <button class="ghost-btn" id="previewBtn">测试与预览</button>
+            <button class="primary-btn" id="publishBtn">发布配置</button>
+          </div>
+        </header>
+
+        <section class="meta-strip">
+          <label>
+            场景分类
+            <select id="categorySelect">
+              <option>异议处理</option>
+              <option>需求挖掘</option>
+              <option>成交推进</option>
+              <option>续费挽回</option>
+            </select>
+          </label>
+          <label>
+            适用阶段
+            <select>
+              <option>报价谈判、成交推进</option>
+              <option>首次沟通</option>
+              <option>方案讲解</option>
+              <option>售后回访</option>
+            </select>
+          </label>
+          <label>
+            优先级
+            <input type="number" value="80" min="0" max="100" />
+          </label>
+          <label>
+            最低置信度
+            <select>
+              <option>中</option>
+              <option>高</option>
+              <option>低</option>
+            </select>
+          </label>
+        </section>
+
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="conditions">客观筛选条件树</button>
+          <button class="tab" data-tab="dimensions">评价维度树</button>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel tree-panel">
+            <div class="panel-head">
+              <div>
+                <h2 id="treeTitle">评价维度树</h2>
+                <p id="treeHint">父节点组织结构，叶子节点承载用户可填写标准。</p>
+              </div>
+              <div class="segmented">
+                <button id="addRootBtn">新增一级</button>
+                <button id="addChildBtn">新增子级</button>
+              </div>
+            </div>
+
+            <div class="tree-toolbar" id="dimensionToolbar">
+              <button class="small-btn active" data-filter="all">全部</button>
+              <button class="small-btn" data-filter="behavior">行为</button>
+              <button class="small-btn" data-filter="strategy">策略</button>
+              <button class="small-btn" data-filter="evidence">证据</button>
+              <button class="small-btn" data-filter="outcome">结果</button>
+            </div>
+
+            <div class="tree-canvas" id="treeCanvas"></div>
+          </section>
+
+          <aside class="panel inspector">
+            <div class="panel-head">
+              <div>
+                <h2>节点属性</h2>
+                <p id="selectedPath">未选择节点</p>
+              </div>
+              <button class="danger-btn" id="deleteNodeBtn">删除</button>
+            </div>
+
+            <div class="form-stack">
+              <label>
+                节点名称
+                <input id="nodeName" />
+              </label>
+              <label>
+                类型
+                <select id="nodeType">
+                  <option value="behavior">行为型</option>
+                  <option value="strategy">策略型</option>
+                  <option value="evidence">证据型</option>
+                  <option value="outcome">结果型</option>
+                  <option value="condition">条件</option>
+                  <option value="group">条件组</option>
+                </select>
+              </label>
+              <label>
+                描述
+                <textarea id="nodeDesc" rows="4"></textarea>
+              </label>
+              <div class="two-col">
+                <label>
+                  权重
+                  <input id="nodeWeight" type="number" min="0" max="100" />
+                </label>
+                <label>
+                  必填
+                  <select id="nodeRequired">
+                    <option value="true">是</option>
+                    <option value="false">否</option>
+                  </select>
+                </label>
+              </div>
+              <label class="check-row">
+                <input id="nodeLeaf" type="checkbox" />
+                作为叶子节点，允许普通用户填写评价标准
+              </label>
+
+              <div id="leafEditor" class="leaf-box">
+                <label>
+                  用户填写标题
+                  <input id="inputLabel" />
+                </label>
+                <label>
+                  占位提示
+                  <textarea id="placeholder" rows="3"></textarea>
+                </label>
+                <div class="two-col">
+                  <label>
+                    最少条数
+                    <input id="minItems" type="number" min="0" max="10" />
+                  </label>
+                  <label>
+                    最多条数
+                    <input id="maxItems" type="number" min="1" max="20" />
+                  </label>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <section class="panel preview-panel">
+          <div class="panel-head">
+            <div>
+              <h2>结构预览</h2>
+              <p>展示最终拼接提示词时会用到的骨架。</p>
+            </div>
+            <button class="small-btn" id="copyJsonBtn">复制 JSON</button>
+          </div>
+          <pre id="jsonPreview"></pre>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast">已保存</div>
+
+    <div class="modal-backdrop" id="promptModal" aria-hidden="true">
+      <div class="modal">
+        <div class="modal-head">
+          <div>
+            <h2>完整提示词骨架预览</h2>
+            <p>这里只展示场景配置层会注入的部分。</p>
+          </div>
+          <button class="icon-btn" id="closeModalBtn" aria-label="关闭">×</button>
+        </div>
+        <pre id="promptPreview"></pre>
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
