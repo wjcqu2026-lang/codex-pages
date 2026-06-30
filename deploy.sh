@@ -23,10 +23,10 @@ git config user.name "Codex"
 git config user.email "codex@local"
 
 git add .
-if git diff --cached --quiet; then
-  echo "No changes to deploy."
-  exit 0
+if ! git diff --cached --quiet; then
+  git commit -m "Update Codex pages site"
+else
+  echo "No file changes; checking for commits to push."
 fi
 
-git commit -m "Update Codex pages site"
 GIT_SSH_COMMAND="ssh -i '$KEY' -o UserKnownHostsFile='$KNOWN_HOSTS' -o IdentitiesOnly=yes" git push -u origin main
