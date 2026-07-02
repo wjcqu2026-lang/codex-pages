@@ -276,12 +276,14 @@ main{padding:18px 24px 22px;max-width:1480px;margin:0 auto}
 
 /* Three-column operator workspace */
 main.workbench{
-  max-width:none;
+  width:100%;
+  max-width:1680px;
   height:calc(100dvh - 66px);
-  padding:16px;
+  padding:16px clamp(16px,2vw,28px);
+  margin:0 auto;
   display:grid;
-  grid-template-columns:310px minmax(480px,1fr) 430px;
-  gap:14px;
+  grid-template-columns:clamp(286px,20vw,330px) minmax(540px,1fr) clamp(390px,27vw,460px);
+  gap:clamp(12px,1vw,16px);
   overflow:hidden;
 }
 .query-rail,.history-panel,.workbench>.conversation{
@@ -474,7 +476,7 @@ main.workbench{
   display:contents;
 }
 .workbench .call-card{
-  grid-template-columns:28px 104px 1fr 42px;
+  grid-template-columns:28px minmax(88px,104px) minmax(0,1fr) 42px;
   min-height:105px;
 }
 .workbench .section-head{
@@ -485,7 +487,7 @@ main.workbench{
   top:0;
   z-index:2;
 }
-@media(max-width:1180px){
+@media(max-width:1320px){
   main.workbench{
     grid-template-columns:300px minmax(420px,1fr);
     overflow:auto;
