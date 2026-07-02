@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>客户通话旅程查询</title>
-  <link rel="stylesheet" href="./src/person-journey.css?v=20260702-4">
+  <link rel="stylesheet" href="./src/person-journey.css?v=20260702-8">
 </head>
 <body>
 <header>
@@ -15,15 +15,26 @@
 <main class="workbench">
   <aside class="query-rail">
     <section class="search-panel">
-      <div>
-        <span>客户 / 坐席查询</span>
+      <div class="search-title">
+        <span>QUERY CENTER</span>
         <h1>查询历史通话</h1>
-        <p>支持客户号或坐席工号：C10086、C20418、C30977、A1001、A1023</p>
+        <p>输入客户号或坐席工号，定位客户后查看多通历史通话。</p>
       </div>
       <form id="search-form">
-        <input id="customer-no" autocomplete="off" placeholder="客户号 / 坐席工号">
-        <button>查询</button>
+        <label>
+          <span>客户号</span>
+          <input id="customer-no" autocomplete="off" placeholder="例如 C10086">
+        </label>
+        <label>
+          <span>坐席工号</span>
+          <input id="agent-no" autocomplete="off" placeholder="例如 A1023">
+        </label>
+        <div class="query-actions">
+          <button>查询通话旅程</button>
+          <button type="button" class="reset-query" onclick="resetQuery()">重置</button>
+        </div>
       </form>
+      <div class="query-examples"><b>可试</b><span>C10086</span><span>C20418</span><span>A1001</span><span>A1023</span></div>
     </section>
     <section class="customer-results">
       <div class="rail-head"><span>MATCHED CUSTOMERS</span><b id="result-count"></b></div>
@@ -75,20 +86,23 @@ const customers={
 let current=customers.C10086,selected=1,topic="全部议题";
 function filteredCalls(){return current.calls.filter(c=>topic==="全部议题"||c.topic===topic)}
 function countBy(fn){return current.calls.filter(fn).length}
-function matchingCustomers(q=""){const key=q.trim().toUpperCase();const list=Object.values(customers);if(!key)return list;return list.filter(c=>c.no.includes(key)||c.agentNos.some(a=>a.includes(key))||c.name.includes(q.trim()))}
-function renderCustomerList(q=""){const list=matchingCustomers(q);document.querySelector("#result-count").textContent=`${list.length} 个`;document.querySelector("#customer-list").innerHTML=list.map(c=>`<button class="customer-row ${c.no===current.no?"active":""}" onclick="chooseCustomer('${c.no}')"><span>${c.avatar}</span><div><b>${c.name}</b><small>${c.no} · 坐席 ${c.agentNos.join(" / ")}</small><em>${c.calls.length} 通历史通话 · ${c.risk}</em></div></button>`).join("")||`<div class="empty">没有匹配客户</div>`}
+function queryValues(){return{customer:document.querySelector("#customer-no")?.value.trim().toUpperCase()||"",agent:document.querySelector("#agent-no")?.value.trim().toUpperCase()||""}}
+function matchingCustomers(){const q=queryValues();const list=Object.values(customers);return list.filter(c=>(!q.customer||c.no.includes(q.customer)||c.name.includes(q.customer))&&(!q.agent||c.agentNos.some(a=>a.includes(q.agent))))}
+function renderCustomerList(){const list=matchingCustomers();document.querySelector("#result-count").textContent=`${list.length} 个`;document.querySelector("#customer-list").innerHTML=list.map(c=>`<button class="customer-row ${c.no===current.no?"active":""}" onclick="chooseCustomer('${c.no}')"><span>${c.avatar}</span><div><b>${c.name}</b><small>${c.no} · 坐席 ${c.agentNos.join(" / ")}</small><em>${c.calls.length} 通历史通话 · ${c.risk}</em></div></button>`).join("")||`<div class="empty">没有匹配客户</div>`}
 function renderCustomer(){document.querySelector("#customer").innerHTML=`<div class="avatar">${current.avatar}</div><div class="identity"><span>当前客户 · ${current.no}</span><h1>${current.name} <small>${current.phone}</small></h1><p>${current.profile}</p></div><div class="customer-metric"><span>近 30 天通话</span><strong>${current.calls.length}</strong><small>查询结果</small></div><div class="customer-metric"><span>未解决问题</span><strong class="${countBy(c=>c.tone!=="good")?'risk-text':''}">${countBy(c=>c.tone!=="good")}</strong><small>${countBy(c=>c.tone==='risk')} 个高风险</small></div><div class="customer-metric"><span>旅程情绪</span><strong class="${current.trend==='下降'?'risk-text':''}">${current.trend}</strong><small>${current.risk}</small></div>`}
 function renderSummary(){document.querySelector("#summary").innerHTML=`<div><span>AI 旅程摘要</span><p>${current.summary}</p></div><div class="journey-tags">${current.tags.map(t=>`<b>${t}</b>`).join("")}</div>`}
 function renderControls(){document.querySelector("#tabs").innerHTML=`<button class="active">全部通话 ${current.calls.length}</button><button>待跟进 ${countBy(c=>c.status.includes('待')||c.status.includes('承诺'))}</button><button>高风险 ${countBy(c=>c.tone==='risk')}</button>`;const topics=["全部议题",...new Set(current.calls.map(c=>c.topic))];document.querySelector("#topic").innerHTML=topics.map(t=>`<option ${t===topic?'selected':''}>${t}</option>`).join("")}
 function renderCalls(){const list=filteredCalls();document.querySelector("#calls").innerHTML=list.length?list.map((c,i)=>`<button class="call-card ${c.id===selected?"selected":""}" onclick="selectCall(${c.id})"><div class="journey-line"><i class="${c.tone}"></i>${i<list.length-1?"<span></span>":""}</div><div class="call-time">${c.date}<small>${c.duration}</small></div><div class="call-main"><div><h3>${c.title}</h3><em class="${c.tone}">${c.status}</em></div><p>${c.summary}</p><footer><span>${c.agent}</span>${c.signals.map(s=>`<b>${s}</b>`).join("")}</footer></div><strong class="score">${c.score}</strong></button>`).join(""):`<div class="empty">该议题下暂无通话记录</div>`}
 function renderConversation(){let c=current.calls.find(x=>x.id===selected)||filteredCalls()[0]||current.calls[0];selected=c.id;document.querySelector("#conversation").innerHTML=`<div class="conversation-head"><div><span>SELECTED CALL</span><h2>${c.title}</h2><p>${c.date} · ${c.agent} · ${c.duration}</p></div><button onclick="toast('音频播放为演示状态')">▶ 播放录音</button></div><div class="call-insight"><span>AI 通话摘要</span><p>${c.summary}</p><div>${c.signals.map(s=>`<b>${s}</b>`).join("")}</div></div><div class="transcript-head"><h3>语音交互文本</h3><span>${c.transcript.length} 条对话 · 已完成说话人分离</span></div><div class="dialogue">${c.transcript.map(x=>`<div class="message ${x[1]==="客户"?"customer":x[1]==="坐席"?"agent":"ai"}"><time>${x[0]}</time><b>${x[1]}</b><p>${x[2]}</p></div>`).join("")}</div><div class="next-action"><span>AI 下一步建议</span><p>${c.tone==="risk"?"立即确认责任人和回访时限，并创建客户闭环任务。":"保持当前服务策略，并记录本通话结果。"}</p><button onclick="toast('跟进任务已创建')">创建跟进任务</button></div>`}
-function renderAll(){renderCustomerList(document.querySelector("#customer-no")?.value||"");renderCustomer();renderSummary();renderControls();renderCalls();renderConversation()}
+function renderAll(){renderCustomerList();renderCustomer();renderSummary();renderControls();renderCalls();renderConversation()}
 function selectCall(id){selected=id;renderCalls();renderConversation();if(innerWidth<900)document.querySelector("#conversation").scrollIntoView({behavior:"smooth",block:"start"})}
 function chooseCustomer(no){current=customers[no];selected=current.calls[0].id;topic="全部议题";renderAll();toast(`已打开 ${current.no} · ${current.name}`)}
-function searchCustomer(no){const key=no.trim().toUpperCase();const match=customers[key]||Object.values(customers).find(c=>c.agentNos.includes(key));if(!match){renderCustomerList(no);toast("未找到匹配客户，可试 C10086、A1001、A1023");return}current=match;selected=current.calls[0].id;topic="全部议题";renderAll();toast(`已查询 ${current.no} · ${current.name}`)}
+function searchCustomer(){const q=queryValues();const list=matchingCustomers();const match=customers[q.customer]||list[0];if(!match){renderCustomerList();toast("未找到匹配客户，可试 C10086、A1001、A1023");return}current=match;selected=current.calls[0].id;topic="全部议题";renderAll();toast(`已查询 ${current.no} · ${current.name}`)}
+function resetQuery(){document.querySelector("#customer-no").value="";document.querySelector("#agent-no").value="";renderCustomerList();toast("查询条件已重置")}
 function toast(t){const x=document.querySelector("#toast");x.className="toast";x.textContent=t;setTimeout(()=>{x.className="";x.textContent=""},2200)}
-document.querySelector("#search-form").onsubmit=e=>{e.preventDefault();searchCustomer(document.querySelector("#customer-no").value)};
-document.querySelector("#customer-no").oninput=e=>renderCustomerList(e.target.value);
+document.querySelector("#search-form").onsubmit=e=>{e.preventDefault();searchCustomer()};
+document.querySelector("#customer-no").oninput=renderCustomerList;
+document.querySelector("#agent-no").oninput=renderCustomerList;
 document.querySelector("#topic").onchange=e=>{topic=e.target.value;selected=(filteredCalls()[0]||current.calls[0]).id;renderCalls();renderConversation();toast(`${topic}筛选已应用`)};
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>toast(`${b.textContent}模块为演示占位`));
 renderAll();
