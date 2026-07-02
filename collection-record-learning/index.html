@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>优秀录音学习任务原型</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">录</div>
+          <div>
+            <div class="brand-title">录音学习</div>
+            <div class="brand-subtitle">催收标杆案例</div>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <button class="nav-item active" data-view="leader">
+            <span class="nav-icon">▦</span>
+            组长工作台
+          </button>
+          <button class="nav-item" data-view="member">
+            <span class="nav-icon">✓</span>
+            我的待办
+          </button>
+          <button class="nav-item" data-view="library">
+            <span class="nav-icon">▤</span>
+            优秀录音库
+          </button>
+        </nav>
+
+        <div class="side-panel">
+          <div class="side-label">当前小组</div>
+          <div class="team-name">华东一组</div>
+          <div class="team-meta">18 名经办组员</div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <div class="crumb">学习任务 / 录音案例复盘</div>
+            <h1 id="pageTitle">优秀录音学习进度</h1>
+          </div>
+          <div class="top-actions">
+            <button class="ghost-button" id="exportBtn">导出进度</button>
+            <button class="primary-button" id="createTaskBtn">新建学习任务</button>
+          </div>
+        </header>
+
+        <section class="view active" id="leaderView">
+          <section class="content-panel full" id="leaderListView">
+            <div class="section-head">
+              <div>
+                <h2>学习任务列表</h2>
+                <p>先查看各个学习任务的分派范围、完成率和风险状态</p>
+              </div>
+              <div class="mini-tabs" id="leaderTaskTabs">
+                <button class="mini-tab active" data-task-filter="all">全部</button>
+                <button class="mini-tab" data-task-filter="active">进行中</button>
+                <button class="mini-tab" data-task-filter="late">有逾期</button>
+              </div>
+            </div>
+
+            <div class="metric-grid" id="leaderSummaryGrid"></div>
+            <div class="task-overview-list" id="leaderTaskList"></div>
+          </section>
+
+          <div class="layout leader-detail hidden" id="leaderDetailView">
+            <section class="content-panel">
+              <div class="section-head">
+                <div>
+                  <button class="back-button" id="backToTaskList">← 返回任务列表</button>
+                  <h2>任务进度</h2>
+                  <p>按任务查看 10-20 人的逐人学习状态</p>
+                </div>
+                <select id="taskSelect" class="select-control"></select>
+              </div>
+
+              <div class="metric-grid" id="metricGrid"></div>
+
+              <div class="toolbar">
+                <div class="segmented" id="statusFilters">
+                  <button class="segment active" data-status="all">全部</button>
+                  <button class="segment" data-status="未开始">未开始</button>
+                  <button class="segment" data-status="学习中">学习中</button>
+                  <button class="segment" data-status="已完成">已完成</button>
+                  <button class="segment" data-status="已逾期">已逾期</button>
+                </div>
+                <label class="search">
+                  <span>搜索</span>
+                  <input id="memberSearch" type="search" placeholder="姓名 / 工号" />
+                </label>
+              </div>
+
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>组员</th>
+                      <th>状态</th>
+                      <th>听取进度</th>
+                      <th>已听时长</th>
+                      <th>完成时间</th>
+                      <th>学习反馈</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="memberRows"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <aside class="detail-panel">
+              <div class="section-head compact">
+                <div>
+                  <h2>任务详情</h2>
+                  <p id="detailSubtitle">录音与学习要求</p>
+                </div>
+              </div>
+
+              <div class="record-card">
+                <div class="record-top">
+                  <div>
+                    <div class="record-label">标杆录音</div>
+                    <h3 id="recordTitle"></h3>
+                  </div>
+                  <span class="pill" id="riskTag"></span>
+                </div>
+                <div class="waveform" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="audio-row">
+                  <button class="round-button" id="playTaskBtn">▶</button>
+                  <div class="audio-track">
+                    <div class="track-bar"><span id="taskAudioProgress"></span></div>
+                    <div class="track-meta">
+                      <span id="taskCurrentTime">00:00</span>
+                      <span id="recordDuration"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-list" id="taskInfo"></div>
+
+              <button class="wide-button" id="remindAllBtn">提醒未完成组员</button>
+              <div class="activity-feed" id="activityFeed"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view" id="memberView">
+          <div class="member-layout">
+            <section class="content-panel">
+              <div class="section-head">
+                <div>
+                  <h2>我的学习任务</h2>
+                  <p>按截止时间处理待办录音学习</p>
+                </div>
+                <div class="mini-tabs">
+                  <button class="mini-tab active" data-member-filter="pending">待完成</button>
+                  <button class="mini-tab" data-member-filter="done">已完成</button>
+                </div>
+              </div>
+              <div class="task-list" id="memberTaskList"></div>
+            </section>
+
+            <aside class="detail-panel member-detail">
+              <div class="section-head compact">
+                <div>
+                  <h2 id="memberTaskTitle">任务详情</h2>
+                  <p id="memberTaskDue"></p>
+                </div>
+              </div>
+
+              <div class="record-card">
+                <div class="record-top">
+                  <div>
+                    <div class="record-label">正在学习</div>
+                    <h3 id="memberRecordTitle"></h3>
+                  </div>
+                  <span class="pill blue">任务</span>
+                </div>
+                <div class="waveform alt" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="audio-row">
+                  <button class="round-button" id="memberPlayBtn">▶</button>
+                  <div class="audio-track">
+                    <div class="track-bar"><span id="memberAudioProgress"></span></div>
+                    <div class="track-meta">
+                      <span id="memberCurrentTime">00:00</span>
+                      <span id="memberDuration"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <label class="feedback-box">
+                学习心得
+                <textarea id="feedbackText" placeholder="记录可借鉴的话术、节奏或风险处理方式"></textarea>
+              </label>
+              <button class="wide-button" id="completeTaskBtn">确认完成学习</button>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view" id="libraryView">
+          <section class="content-panel full">
+            <div class="section-head">
+              <div>
+                <h2>优秀录音库</h2>
+                <p>组长从这里选择标杆录音并分派学习</p>
+              </div>
+            </div>
+            <div class="library-grid" id="libraryGrid"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div class="drawer" id="drawer">
+      <div class="drawer-card">
+        <div class="drawer-head">
+          <div>
+            <div class="drawer-label" id="drawerLabel">提醒</div>
+            <h2 id="drawerTitle">发送学习提醒</h2>
+          </div>
+          <button class="icon-button" id="closeDrawer">×</button>
+        </div>
+        <div id="drawerBody"></div>
+        <div class="drawer-actions">
+          <button class="ghost-button" id="cancelDrawer">取消</button>
+          <button class="primary-button" id="drawerPrimary">发送提醒</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
